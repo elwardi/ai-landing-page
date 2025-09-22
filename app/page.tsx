@@ -1,12 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
-export default function FaceSkinAIPage() {
+export default function FaceSkinAIPage(): JSX.Element {
   // ⏳ Chrono (5 min = 300 sec)
   const TOTAL_TIME = 300;
-  const [timeLeft, setTimeLeft] = useState(TOTAL_TIME);
-  const [expired, setExpired] = useState(false);
+  const [timeLeft, setTimeLeft] = useState<number>(TOTAL_TIME);
+  const [expired, setExpired] = useState<boolean>(false);
 
   useEffect(() => {
     if (timeLeft <= 0) {
@@ -22,14 +22,14 @@ export default function FaceSkinAIPage() {
   const seconds = timeLeft % 60;
 
   // 🔄 Quotes rotation
-  const quotes = [
+  const quotes: string[] = [
     "Reveal the true age of your skin with AI.",
     "Your face tells a story – let AI decode it.",
     "Smart analysis for flawless beauty results.",
     "Know your skin, know your future.",
     "The AI that sees what mirrors can't.",
   ];
-  const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
+  const [currentQuoteIndex, setCurrentQuoteIndex] = useState<number>(0);
 
   useEffect(() => {
     const quoteTimer = setInterval(() => {
@@ -47,7 +47,7 @@ export default function FaceSkinAIPage() {
       style={{ backgroundImage: "url('/skin-face.jpg')" }}
     >
       {/* Overlay sombre + dégradé futuriste */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-pink-900/70 to-purple-900/70"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-pink-900/70 to-purple-900/70" />
 
       <motion.div
         initial={{ opacity: 0, y: 40 }}
@@ -94,9 +94,7 @@ export default function FaceSkinAIPage() {
             >
               {timeLeft <= 10
                 ? `⚠️ Hurry! Only ${seconds}s left!`
-                : `⏳ Offer ends in ${minutes}:${
-                    seconds < 10 ? `0${seconds}` : seconds
-                  }`}
+                : `⏳ Offer ends in ${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`}
             </motion.div>
 
             {/* Barre de progression */}
@@ -106,7 +104,7 @@ export default function FaceSkinAIPage() {
                 initial={{ width: "100%" }}
                 animate={{ width: `${progress}%` }}
                 transition={{ ease: "linear", duration: 1 }}
-              ></motion.div>
+              />
             </div>
           </div>
         ) : (
@@ -117,18 +115,19 @@ export default function FaceSkinAIPage() {
 
         {/* CTA */}
         <a
-          href="https://your-ogads-link.com"
+          href="/"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <button className="w-full text-xl py-5 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold shadow-lg transform hover:scale-105 transition">
+          <button
+            type="button"
+            className="w-full text-xl py-5 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold shadow-lg transform hover:scale-105 transition"
+          >
             📲 Start Free AI Skin Scan
           </button>
         </a>
 
-        <p className="mt-6 text-sm text-gray-300">
-          Works on iOS & Android 📱
-        </p>
+        <p className="mt-6 text-sm text-gray-300">Works on iOS & Android 📱</p>
 
         {/* Signature */}
         <p className="mt-8 text-xs text-gray-400 italic">
