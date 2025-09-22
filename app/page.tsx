@@ -1,103 +1,141 @@
-import Image from "next/image";
+"use client";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
-export default function Home() {
+export default function FaceSkinAIPage() {
+  // ⏳ Chrono (5 min = 300 sec)
+  const TOTAL_TIME = 300;
+  const [timeLeft, setTimeLeft] = useState(TOTAL_TIME);
+  const [expired, setExpired] = useState(false);
+
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      setExpired(true);
+      return;
+    }
+    const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
+  // Convertir secondes → mm:ss
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
+
+  // 🔄 Quotes rotation
+  const quotes = [
+    "Reveal the true age of your skin with AI.",
+    "Your face tells a story – let AI decode it.",
+    "Smart analysis for flawless beauty results.",
+    "Know your skin, know your future.",
+    "The AI that sees what mirrors can't.",
+  ];
+  const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
+
+  useEffect(() => {
+    const quoteTimer = setInterval(() => {
+      setCurrentQuoteIndex((prev) => (prev + 1) % quotes.length);
+    }, 5000);
+    return () => clearInterval(quoteTimer);
+  }, [quotes.length]);
+
+  // Progress %
+  const progress = (timeLeft / TOTAL_TIME) * 100;
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div
+      className="min-h-screen flex items-center justify-center bg-cover bg-center text-white relative"
+      style={{ backgroundImage: "url('/skin-face.jpg')" }}
+    >
+      {/* Overlay sombre + dégradé futuriste */}
+      <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-pink-900/70 to-purple-900/70"></div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="relative z-10 w-[90%] max-w-3xl bg-pink-900/30 backdrop-blur-lg rounded-2xl shadow-2xl p-10 text-center border border-pink-400/40"
+      >
+        <h1 className="text-5xl font-extrabold mb-6 text-pink-400">
+          ✨ AI Face & Skin Analyzer
+        </h1>
+
+        {/* 🔄 Quotes dynamiques */}
+        <p className="italic text-xl text-pink-200 mb-6 animate-fade">
+          "{quotes[currentQuoteIndex]}"
+        </p>
+
+        <p className="mb-8 text-lg text-gray-200">
+          Scan your face with AI to reveal your skin health and discover your
+          real beauty age 💖
+        </p>
+
+        {/* Mockup agrandi */}
+        <div className="flex justify-center">
+          <img
+            src="/skin-app.jpg"
+            alt="AI Skin Analyzer App Preview"
+            className="w-[300px] h-auto rounded-xl mb-8 shadow-lg"
+          />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
+
+        {/* Chrono + Progress Bar */}
+        {!expired ? (
+          <div className="mb-8">
+            <motion.div
+              className={`text-4xl font-extrabold ${
+                timeLeft < 30 ? "text-red-500" : "text-pink-300"
+              }`}
+              animate={
+                timeLeft < 30
+                  ? { opacity: [1, 0.4, 1], scale: [1, 1.2, 1] }
+                  : { opacity: 1 }
+              }
+              transition={{ duration: 0.8, repeat: Infinity }}
+            >
+              {timeLeft <= 10
+                ? `⚠️ Hurry! Only ${seconds}s left!`
+                : `⏳ Offer ends in ${minutes}:${
+                    seconds < 10 ? `0${seconds}` : seconds
+                  }`}
+            </motion.div>
+
+            {/* Barre de progression */}
+            <div className="w-full bg-gray-700 h-3 rounded-full mt-4">
+              <motion.div
+                className="h-3 rounded-full bg-gradient-to-r from-pink-500 to-purple-600"
+                initial={{ width: "100%" }}
+                animate={{ width: `${progress}%` }}
+                transition={{ ease: "linear", duration: 1 }}
+              ></motion.div>
+            </div>
+          </div>
+        ) : (
+          <div className="text-3xl font-bold text-red-400 mb-8 animate-bounce">
+            ❌ Offer Expired – Try Again Soon!
+          </div>
+        )}
+
+        {/* CTA */}
         <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+          href="https://your-ogads-link.com"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
+          <button className="w-full text-xl py-5 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold shadow-lg transform hover:scale-105 transition">
+            📲 Start Free AI Skin Scan
+          </button>
         </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        <p className="mt-6 text-sm text-gray-300">
+          Works on iOS & Android 📱
+        </p>
+
+        {/* Signature */}
+        <p className="mt-8 text-xs text-gray-400 italic">
+          Designed for beauty & health by{" "}
+          <span className="font-semibold text-pink-300">Youssef Elwardi</span>
+        </p>
+      </motion.div>
     </div>
   );
 }
